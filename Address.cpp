@@ -142,23 +142,24 @@ Address address_handler(string line)
 ostream &operator<<(ostream &out, const Address &address)
 {
 	out << "Rua: " << Address::getStreet() << endl;
-	out << "Nº porta/prédio: " << Address::getDoorNumber << endl;
+	out << "NÂº porta/prÃ©dio: " << Address::getDoorNumber << endl;
 	out << "Andar: " << Address::getFloor << endl;
-	out << "Código postal: " << Address::getZipCode << endl;
+	out << "CÃ³digo postal: " << Address::getZipCode << endl;
 	out << "Localidade: " << Address::getLocation << endl;
 	return out;
 }
 //--------------------------------------------------------------------
-//NOTA: versão antiga da mesma operação anterior SUBSTITUIR
+//NOTA: versÃ£o antiga da mesma operaÃ§Ã£o anterior SUBSTITUIR
 string return_addres(Address endereco) {
 	stringstream ss;
 	string address_output;
 	ss << "Rua: " << endereco.rua_nome << endl;
-	ss << "Nº porta/prédio: " << endereco.porta_number << endl;
+	ss << "NÂº porta/prÃ©dio: " << endereco.porta_number << endl;
 	ss << "Andar: " << endereco.andar_number << endl;
-	ss << "Código postal: " << endereco.zip_code << endl;
+	ss << "CÃ³digo postal: " << endereco.zip_code << endl;
 	ss << "Localidade: " << endereco.localidade << endl;
 	address_output = ss.str();
 	return address_output;
 }
 //--------------------------------------------------------------------
+TESTE
