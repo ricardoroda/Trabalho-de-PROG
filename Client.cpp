@@ -3,7 +3,7 @@
 
   // ADDING CLIENTS INFO  to a new class object
 
-// creating a new client (USER -> CLASS OBJECT)
+// NEW CLIENT - creating a new client (USER -> CLASS OBJECT)
 Client::Client(string name, unsigned VATnumber, unsigned short familySize, Address address){
   
 	this->name = name;
@@ -14,7 +14,39 @@ Client::Client(string name, unsigned VATnumber, unsigned short familySize, Addre
 	this->totalPurchased = 0;
 }
 
-// reading client from file (FILE -> CLASS OBJECT) --- NOTA: NÂO ESTA A SER USADO (client_data function)
+//NEW CLIENT (OLD) - Add new client
+vector<Client> add_client(vector<Client> &vec) {
+	vector<string> new_client = clients_questions();
+	Client aux = client_handler(new_client);
+	vec.push_back(aux);
+	return vec;
+}
+
+//NEW CLIENT QUESTIONS - it will automate de clients_question job
+vector<string> clientQuestionHandler(vector<string> vec) {
+	string line;
+	vector<string> new_client;
+	cout << "::::::::::" << endl;
+	cin.ignore();
+	for (size_t i = 0; i < vec.size(); i++) {
+		cout << vec.at(i);
+		getline(cin, line);
+		new_client.push_back(line);
+	}
+	cout << "::::::::::" << endl;
+	return new_client;
+}
+
+//NEW CLIENT QUESTIONS - creates a new vector<string> with the data needed to create my new client
+vector<string> clients_questions() {
+	string line;
+	vector<string> nClient_questions = { "Client name: ","NIF number: ","Nº family members: ","Address: ","Package list: " };
+	cout << endl;
+	vector<string> new_client = clientQuestionHandler(nClient_questions);
+	return new_client;
+}
+
+// READ CLIENT - reading client from file (FILE -> CLASS OBJECT ?) --- NOTA: NÂO ESTA A SER USADO (client_data function)
 Client::Client(string name, unsigned VATnumber, unsigned short familySize, Address address, vector<Packet> & packets, unsigned totalPurchased){
   
 	this->name = name;
@@ -25,7 +57,7 @@ Client::Client(string name, unsigned VATnumber, unsigned short familySize, Addre
 	this->totalPurchased = totalPurchased;
 }
 
-// Função que cria um vetor (de objectos da class client) com todos os clientes presentes no texto;
+// CLIENT CLASS VECTOR - Função que cria um vetor (de objectos da class client) com todos os clientes presentes no texto;
 vector<Client> client_data(string tmp_client_data) {
 	cout << "i started" << endl;
 	vector<Client> client_info;
@@ -47,6 +79,22 @@ vector<Client> client_data(string tmp_client_data) {
 	cout << "im working";
 	return client_info;
 }
+
+//REMOVE - remove a client (remove all data of that client) 
+void remove_client(vector<Client> &vec) { //Poque não so usar o ERASE no vetor de clients?
+	string nif;
+	cout << "What's the nif of the client you want to remove?" << endl;
+	cin >> nif;
+	for (size_t i = 0; i < vec.size(); i++) {
+		if (vec.at(i).getVATnumber == nif) {
+			auto it = vec.begin() + i;
+			rotate(it, it + 1, vec.end());     //?????
+			cout << "The client with the NIF: " << vec.back().nif << " it's being deleted! " << endl;
+			vec.pop_back();
+		}
+	}
+}
+
 
   // GET methods - functions that return the class object elements
 
@@ -138,7 +186,7 @@ ostream& operator<<(ostream& out, const Client & client){
 
 }
 
-//Function responsible to handle with my Clients data from the file of my clients.
+//Function responsible to handle with my Clients data from the file of my clients. (VECTOR<STRING> -> CLASS OBJECT)
 Client client_handler(vector<string> clients) {
 	Client client;
 	client.setName = clients.at(0);
@@ -151,54 +199,6 @@ Client client_handler(vector<string> clients) {
 	return client;
 }
 
-
-
-//-------------------------------------------- Clients functions TO ADD -----------------------------------
-
-//it will automate de clients_question job
-vector<string> clientQuestionHandler(vector<string> vec) {
-	string line;
-	vector<string> new_client;
-	cout << "::::::::::" << endl;
-	cin.ignore();
-	for (size_t i = 0; i < vec.size(); i++) {
-		cout << vec.at(i);
-		getline(cin, line);
-		new_client.push_back(line);
-	}
-	cout << "::::::::::" << endl;
-	return new_client;
-}
-//creates a new vector<string> with the data needed to create my new client
-vector<string> clients_questions() {
-	string line;
-	vector<string> nClient_questions = { "Client name: ","NIF number: ","Nº family members: ","Address: ","Package list: " };
-	cout << endl;
-	vector<string> new_client = clientQuestionHandler(nClient_questions);
-	return new_client;
-}
-
-//Add new client
-vector<Client> add_client(vector<Client> &vec) {
-	vector<string> new_client = clients_questions();
-	Cliente aux = client_handler(new_client);
-	vec.push_back(aux);
-	return vec;
-}
-//remove a client (remove all data of that client)
-void remove_client(vector<Cliente> &vec) {
-	string nif;
-	cout << "What's the nif of the client you want to remove?" << endl;
-	cin >> nif;
-	for (size_t i = 0; i < vec.size(); i++) {
-		if (vec.at(i).nif == nif) {
-			auto it = vec.begin() + i;
-			rotate(it, it + 1, vec.end());
-			cout << "The client with the NIF: " << vec.back().nif << " it's being deleted! " << endl;
-			vec.pop_back();
-		}
-	}
-}
 //Vector of Integers with the ID of the packages that a client have bought, the idea here is to be able to modify each element of this vector
 void clients_packs(string line, vector<int> &aux) {
 	line = regex_replace(line, regex(";"), " ");
@@ -208,8 +208,9 @@ void clients_packs(string line, vector<int> &aux) {
 		aux.push_back(i);
 	}
 }
-//update/change the information of a client;
-void update_client(vector<Cliente> &vec) {
+
+//update/change the information of a client; (NOTA: Adicionei como função da class)
+void Client::update_client(vector<Client> &vec) {
 	print_all_clients(vec);
 	int op;
 	string line;
@@ -219,44 +220,45 @@ void update_client(vector<Cliente> &vec) {
 	cin.ignore();
 	vector<string> menu = { "Name","NIF","Family Number","Address","Package" };
 	for (size_t i = 0; i < vec.size(); i++) {
-		if (vec.at(i).nif == nif) {
+		if (vec.at(i).getVATnumber == nif) {
 			op = readOptions(menu);
 			if (op == 1) {
 				cout << "New Name: ";
 				cin.ignore();
 				getline(cin, line);
-				vec.at(i).nome = line;
+				vec.at(i).setName = line;
 			}
 			if (op == 2) {
 				cout << "New NIF: ";
 				cin.ignore();
 				getline(cin, line);
-				vec.at(i).nif = line;
+				vec.at(i).setVATnumber = line;
 			}
 			if (op == 3) {
 				cout << "New family number: ";
 				cin.ignore();
 				getline(cin, line);
 				istringstream transform(line);
-				transform >> vec.at(i).number_agregado;
+				transform >> vec.at(i).setFamilySize;
 			}
 			if (op == 4) {
 				cout << "New address: ";
 				cin.ignore();
 				getline(cin, line);
-				vec.at(i).morada = address_handler(line);
+				vec.at(i).setAddress = address_handler(line);
 			}
 			if (op == 5) {
 				cout << "New package: ";
 				cin.ignore();
 				getline(cin, line);
-				vec.at(i).pacotes = line;
+				vec.at(i).setPacketList = line;
 			}
 		}
 	}
 }
+
 //print a specifi client
-void printClient(vector<Cliente> &vec) {
+void printClient(vector<Client> &vec) {
 	cout << ":::::Please provide us with the client Name or NIF:::::";
 	cout << "Wich information suits you?  ";
 	vector<string> menu = { "Name","NIF" };
@@ -267,13 +269,13 @@ void printClient(vector<Cliente> &vec) {
 		cin.ignore();
 		getline(cin, line);
 		for (size_t i = 0; i < vec.size(); i++) {
-			if (line == vec.at(i).nome) {
+			if (line == vec.at(i).getName) {
 				cout << "::::::::::" << endl;
-				cout << "Name: " << vec.at(i).nome << endl;
-				cout << "NIF: " << vec.at(i).nif << endl;
-				cout << "Family members: " << vec.at(i).number_agregado << endl;
-				cout << "----Address--- \n" << return_addres(vec.at(i).morada);
-				cout << "Packages: " << vec.at(i).pacotes << endl;
+				cout << "Name: " << vec.at(i).getName << endl;
+				cout << "NIF: " << vec.at(i).getVATnumber << endl;
+				cout << "Family members: " << vec.at(i).getFamilySize << endl;
+				cout << "----Address--- \n" << return_addres(vec.at(i).getAddress);
+				cout << "Packages: " << vec.at(i).getPacketList << endl;
 			}
 		}
 	}
@@ -282,29 +284,31 @@ void printClient(vector<Cliente> &vec) {
 		cout << "Whats the NIF of the client?" << endl;
 		getline(cin, line);
 		for (size_t i = 0; i < vec.size(); i++) {
-			if (line == vec.at(i).nif) {
+			if (line == vec.at(i).getVATnumber) {
 				cout << "::::::::::" << endl;
-				cout << "Name: " << vec.at(i).nome << endl;
-				cout << "NIF: " << vec.at(i).nif << endl;
-				cout << "Family members: " << vec.at(i).number_agregado << endl;
-				cout << "----Address--- \n" << return_addres(vec.at(i).morada);
-				cout << "Packages: " << vec.at(i).pacotes << endl;
+				cout << "Name: " << vec.at(i).getName << endl;
+				cout << "NIF: " << vec.at(i).getVATnumber << endl;
+				cout << "Family members: " << vec.at(i).getFamilySize << endl;
+				cout << "----Address--- \n" << return_addres(vec.at(i).getAddress);
+				cout << "Packages: " << vec.at(i).getPacketList << endl;
 			}
 		}
 	}
 }
+
 //Print all my clients.
-void print_all_clients(vector<Cliente> &vec) {
+void print_all_clients(vector<Client> &vec) {
 	cout << ":::::The current clients in our database are:::::";
 	for (size_t i = 0; i < vec.size(); i++) {
 		cout << "::::::::::" << endl;
-		cout << "Name: " << vec.at(i).nome << endl;
-		cout << "NIF: " << vec.at(i).nif << endl;
-		cout << "Family members: " << vec.at(i).number_agregado << endl;
-		cout << "----Address--- \n" << return_addres(vec.at(i).morada);
-		cout << "Packages: " << vec.at(i).pacotes << endl;
+		cout << "Name: " << vec.at(i).getName << endl;
+		cout << "NIF: " << vec.at(i).getVATnumber << endl;
+		cout << "Family members: " << vec.at(i).getFamilySize << endl;
+		cout << "----Address--- \n" << return_addres(vec.at(i).getAddress);
+		cout << "Packages: " << vec.at(i).getPacketList << endl;
 	}
 }
+
 void makeCopy(string filename) {
 	ifstream ifile;
 	string line;
@@ -322,17 +326,18 @@ void makeCopy(string filename) {
 	ifile.close();
 	ofile.close();
 }
-void writeClients(string file_name, vector<Cliente> &vec) {
+
+void writeClients(string file_name, vector<Client> &vec) {
 	makeCopy(file_name);
 	cout << "A copy of the previous file have been made in case of data lost!";
 	ofstream file;
 	file.open(file_name);
 	if (file.is_open()) {
 		for (size_t i = 0; i < vec.size(); i++) {
-			file << vec.at(i).nome << endl;
-			file << vec.at(i).nif << endl;
-			file << vec.at(i).number_agregado << endl;
-			file << vec.at(i).morada.rua_nome << " / " << vec.at(i).morada.porta_number << " / " << vec.at(i).morada.andar_number << " / " << vec.at(i).morada.zip_code << " / " << vec.at(i).morada.localidade << endl;
+			file << vec.at(i).getName << endl;
+			file << vec.at(i).getVATnumber << endl;
+			file << vec.at(i).getFamilySize << endl;
+			file << return_addres(vec.at(i).getAddress) << endl;
 			if (i < vec.size() - 1) {
 				file << "::::::::::" << endl;
 			}

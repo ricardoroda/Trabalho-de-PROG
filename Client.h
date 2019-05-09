@@ -23,7 +23,7 @@ class Client{
  public:
   Client(string name, unsigned VATnumber, unsigned short familySize, Address address);  // for a new client
   Client(string name, unsigned VATnumber, unsigned short familySize, Address address, vector<Packet> & packets, unsigned totalPurchased);  // client read from file
-
+	
   // GET methods
   
   string getName() const;
@@ -43,7 +43,7 @@ class Client{
   unsigned setTotalPurchased(unsigned totalPurchased);
   
   // other methods
-
+  void update_client(vector<Client> &vec) //Friend ????
   friend ostream& operator<<(ostream& out, const Client & client);
 };
 
